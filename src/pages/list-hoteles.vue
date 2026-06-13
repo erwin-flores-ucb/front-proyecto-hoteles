@@ -1,6 +1,8 @@
 <template>
     <div>
-        <h1>LISTA DE HOTELES</h1>  <el-button type="primary" :loading="loading" @click="loadHoteles">Recargar</el-button>
+        <h1>LISTA DE HOTELES</h1>
+        <el-button type="success" @click="$router.push({name: 'crearHotel'})" :icon="Plus">Nuevo</el-button>
+        <el-button type="primary" :loading="loading" @click="loadHoteles">Recargar</el-button>
         <el-table :data="hoteles" style="width: 100%" height="250">
             <el-table-column prop="id" label="ID" />
             <el-table-column prop="nombre" label="Nombre" />
@@ -15,27 +17,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
+import {
+    Plus
+} from '@element-plus/icons-vue'
+import { useListHotelesComposable } from '../composables/list-hotel.composable';
 
-type HotelType = {
-    id: string,
-    nombre: string,
-    direccion: string,
-    estrellas: number
-}
-
-const hoteles = ref<Array<HotelType>>([]);
-const loading = ref(false)
-
-const loadHoteles = () => {
-    loading.value = true
-    fetch('http://localhost:3000/hotel/list').then(async resp => {
-        const data = await resp.json()
-        hoteles.value = data.data;
-    }).catch(err => console.log(err)).finally(() => {
-        loading.value = false
-    })
-}
+const {
+    hoteles,
+    loading,
+    loadHoteles,
+} = useListHotelesComposable();
 
 onMounted(() => {
     loadHoteles()
